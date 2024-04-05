@@ -7,7 +7,7 @@ Hello, my name is Gabriele Mora, I’m from Cividate Camuno a small city in Ital
 Booktime is a web application developed for the CS50x final project using Flask, enabling users to explore, track, and review books. The platform integrates with the New York Times API to showcase trending bestsellers in both fiction and non-fiction categories and use the Google Book API for all the books cover and all the books information available in the project.
 
 
-###  Video Demo: <URL HERE>
+###  Video Demo: <https://youtu.be/sMj3HBIK3Y4>
 
   
 
