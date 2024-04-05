@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block title %}{{book_title}}{% endblock %}
+
+{% block body %}
+<style>
+    .heading {
+        font-size: 25px;
+        margin-right: 25px;
+    }
+
+    .fa {
+        font-size: 25px;
+    }
+
+    .checked {
+        color: orange;
+    }
+
+
+    .form-select-lg {
+        width: 250px;
+        height: 50px;
+    }
+
+    .container#review {
+        box-shadow: 10px 10px lightblue;
+        border-style: solid;
+        border-width: 1px;
+        border-color: gray;
+        border-radius: 30px 30px 30px 30px;
+
+    }
+</style>
+
+<div class="container text-center mt-5">
+    <div class="row align-items-start">
+        <div class="col">
+            <img src=' {{ search["items"][0]["volumeInfo"]["imageLinks"]["thumbnail"] }}' alt="Book Cover"
+                style="width: 250px !important;">
+        </div>
+        <div class="col">
+            {% if user.is_authenticated %}
+            <h1>{% if completed == True %} ✅ {% endif %}{{ search["items"][0]["volumeInfo"]["title"] }}</h1>
+            <h4>{{ search["items"][0]["volumeInfo"]["authors"][0] }}</h4>
+            <h6>Year of release: {{ search["items"][0]["volumeInfo"]["publishedDate"][0:4] }}</h6>
+            {% if book_in_library == False %}
+            <form method="POST">
+                <button type="submit" value="ADD_BOOK" name="add_book" class="btn btn-primary">✅ ADD TO YOUR
+                    LIBRARY</button>
+            </form>
+            {% else %}
+            <form method="POST">
+                {% if completed == False %}
+                <button type="submit" value="BOOK_COMPLETED" name="book_completed" class="btn btn-success">📓 MARK AS
+                    COMPLETED</button>
+                {% else %}
+                <button type="submit" value="MARK_AS_TO_BE_READ" name="mark_as_to_be_read"
+                    class="btn btn-outline-success">📚 MARK AS TO BE READ</button>
+                {% endif %}
+                <button type="submit" value="DELETE_BOOK" name="delete_book" class="btn btn-danger">DELETE FROM YOUR
+                    LIBRARY</button>
+            </form>
+            {% endif %}
+            {% else %}
+            <h1>{{ search["items"][0]["volumeInfo"]["title"] }}</h1>
+            <h4>{{ search["items"][0]["volumeInfo"]["authors"][0] }}</h4>
+            <h6>Year of release: {{ search["items"][0]["volumeInfo"]["publishedDate"][0:4] }}</h6>
+            <a href="/login"><button type="button" id="not_logged_in" class="btn btn-danger">NOT LOGGED IN</button></a>
+            {% endif %}
+            <div class="mt-5">
+                <h3>Description</h3>
+                <p> {{ search["items"][0]["volumeInfo"]["description"] }} </p>
+            </div>
+            <div class="d-flex flex-column align-items-end">
+                <h5>Tags:</h5>
+                <span class="badge rounded-pill text-bg-primary"><i
+                        class="bi bi-tag-fill"></i>{{search["items"][0]["volumeInfo"]["categories"][0]}}</span>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="row mt-5">
+        <h3>Reviews</h3>
+        <div class="inline">
+            <span class="heading">User Rating</span>
+            {% for i in range(1, 6) %}
+                {% if average_review|round(1)|int >= i %}
+                <span class="fa fa-star checked"></span>
+                {% else %}
+                <span class="fa fa-star"></span>
+                {% endif %}
+            {% endfor %}
+            <p>{{average_review }} stars rating average based on {{number_of_review}} reviews.</p>
+        </div>
+        <div class="row mt-5">
+            <h3>Your Review</h3>
+            {% if user.is_authenticated %}
+                {% if book_in_library == False %}
+                    <h4>❌ ADD THE BOOK IN YOUR LIBRARY TO ENABLE YOUR REVIEW SECTION ❌</h4>
+                {% else %}
+                    {% if user_review is none %}
+                    <form method="POST">
+                        <div class="form-group d-flex flex-column justify-content-center align-items-center gap-3 ">
+                            <select class="form-select form-select-lg mb-3 mt-3 align-self-center" id="starReview"
+                                name="starReview" aria-label=".form-select-lg example" required>
+                                <option disabled selected>Select your star rating</option>
+                                <option value="1">⭐️</option>
+                                <option value="2">⭐️⭐️</option>
+                                <option value="3">⭐️⭐️⭐️</option>
+                                <option value="4">⭐️⭐️⭐️⭐️</option>
+                                <option value="5">⭐️⭐️⭐️⭐️⭐️</option>
+                            </select>
+
+                        <div class="flex-grow-1 p-2 align-self-center w-100">
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" id="textReview"
+                                name="textReview" placeholder="Write HERE your review about '{{ search["items"][0]["volumeInfo"]["title"] }}' " required></textarea>
+                        </div>
+                        </div>
+                        <div class=" d-flex justify-content-end mt-3">
+                            <button type="submit" value="PUBLISH_REVIEW" name="publish_review"  class="btn btn-primary">Publish</button>
+                        </div>
+                    {% else %}
+                        <form method="POST">
+                            <div class="form-group d-flex flex-column justify-content-center align-items-center gap-3 ">
+                                <select class="form-select form-select-lg mb-3 mt-3 align-self-center" id="starReview"
+                                    name="starReview" aria-label=".form-select-lg example" required>
+                                    
+                                    <option disabled selected>{% for i in range(user_review[0]) %}⭐️{% endfor %}</option>
+                                </select>
+    
+                                <div class="flex-grow-1 p-2 align-self-center w-100">
+                                    <textarea readonly class="form-control" id="exampleFormControlTextarea1" rows="3" id="textReview"
+                                        name="textReview" required> {{user_review[1]}}</textarea>
+                                </div>
+                            </div>
+                        <div class=" d-flex justify-content-end mt-3">
+                            <button type="submit" value="DELETE_REVIEW" name="delete_review"  class="btn btn-danger">Delete</button>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% else %} 
+                <h4><a href="/login">LOGIN</a> TO ADD YOUR REVIEW</h4>
+            {% endif %}
+            <hr style="border:3px solid #f1f1f1">
+            </form>
+            <div class="mb-5">
+                <h3>All Reviews</h3>
+            {% for review in reviews %}  
+                <div class="container mt-4 mb-4" id="review">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p>{{review[0]}}</p>
+                        </div>
+                        <div class="col offset-md-4">
+                            <p>{{review[1]}}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p>Rating:</p>
+                            {% for i in range(review[2]|int) %} 
+                            <span class="fa fa-star checked"></span> 
+                            {% endfor %}
+                        </div>
+                        <div class="col">
+                            <p>{{ review[3] }}</p>
+                        </div>    
+                    </div>
+                </div>
+                <hr>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% endblock %}

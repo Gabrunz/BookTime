@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Library{% endblock %}
+
+{% block body %}
+<div class="heading" id="trendings">
+    <h2>LIBRARY 📚</h2>
+</div>
+
+<div class="m-4">
+  <h4>Books Completed ✅</h4>
+</div>
+
+<div class="row mb-5 mt-3 ms-2 me-5" id="row-trending">
+  {% for i in range(number_of_book) %}
+    {% if search[i]["items"][0]["volumeInfo"]["pageReaded"] == 100 %}
+    <div class="col mb-5">
+      <div class="card h-100">
+        <img src= '{{ search[i]["items"][0]["volumeInfo"]["imageLinks"]["thumbnail"] }}' class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">{{ search[i]["items"][0]["volumeInfo"]["title"] }}</h5>
+          <h6 class="card-subtitle mb-2 text-body-secondary">{{ search[i]["items"][0]["volumeInfo"]["publishedDate"][0:4] }}</h6>
+          <p class="card-text">{{ search[i]["items"][0]["volumeInfo"]["authors"][0] }}</p>
+          {% if search[i]["items"][0]["volumeInfo"]["industryIdentifiers"] != ""  %}
+            {% for n in range(search[i]["items"][0]["volumeInfo"]["industryIdentifiers"]|length) %}
+              {% if search[i]["items"][0]["volumeInfo"]["industryIdentifiers"][n]["type"] == "ISBN_13" %}
+                <a href='/book/{{ search[i]["items"][0]["volumeInfo"]["industryIdentifiers"][n]["identifier"] }}' class="stretched-link"></a>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  {% endfor %}
+</div>
+
+<div class="m-4">
+    <h4>Books to be read 📕</h4>
+</div>
+
+<div class="row mb-5 mt-3 ms-2 me-5" id="row-trending">
+  {% for i in range(number_of_book) %}
+    {% if search[i]["items"][0]["volumeInfo"]["pageReaded"] == 0 %}
+    <div class="col mb-5">
+      <div class="card h-100">
+        <img src= '{{ search[i]["items"][0]["volumeInfo"]["imageLinks"]["thumbnail"] }}' class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">{{ search[i]["items"][0]["volumeInfo"]["title"] }}</h5>
+          <h6 class="card-subtitle mb-2 text-body-secondary">{{ search[i]["items"][0]["volumeInfo"]["publishedDate"][0:4] }}</h6>
+          <p class="card-text">{{ search[i]["items"][0]["volumeInfo"]["authors"][0] }}</p>
+          {% if search[i]["items"][0]["volumeInfo"]["industryIdentifiers"] != ""  %}
+            {% for n in range(search[i]["items"][0]["volumeInfo"]["industryIdentifiers"]|length) %}
+              {% if search[i]["items"][0]["volumeInfo"]["industryIdentifiers"][n]["type"] == "ISBN_13" %}
+                <a href='/book/{{ search[i]["items"][0]["volumeInfo"]["industryIdentifiers"][n]["identifier"] }}' class="stretched-link"></a>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  {% endfor %}
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,33 @@
+#search {
+    width: 400px !important;
+}
+
+#row-trending .col, #row-trending .card, .card-img-top {
+    width: 200px;
+    height: auto;
+}
+
+
+#categories .card, #categories .card img {
+    width: 400px;
+    height: 230px;
+    padding: 0px;
+    object-fit: fill;
+}
+.card-img-overlay {
+    padding: 100px 0;
+    text-align: center;
+    text-shadow: 4px 4px black;
+
+}
+
+.heading {
+    padding: 15px 0;
+    text-align: center;
+}
+
+#not_logged_in:hover {
+    background-color: #adb5bd;
+    border-color: #adb5bd;
+    content: "Don't click me";
+}

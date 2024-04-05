@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Search{% endblock %}
+
+{% block body %}
+
+<div class="m-4 heading">
+  <h4>📚🔍 "{{search_input}}" BOOKS</h4>
+</div>
+
+<div class="row ms-5 mb-5 me-0" id="row-trending">
+  {% for i in range(8) %}
+    <div class="col ms-5 mt-5 me-5">
+      <div class="card h-100">
+        <img src= '{{ search["items"][i]["volumeInfo"]["imageLinks"]["thumbnail"] }}' class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">{{ search["items"][i]["volumeInfo"]["title"] }}</h5>
+          <h6 class="card-subtitle mb-2 text-body-secondary">{{ search["items"][i]["volumeInfo"]["publishedDate"][0:4] }}</h6>
+          <p class="card-text">{{ search["items"][i]["volumeInfo"]["authors"][0] }}</p>
+          {% if search["items"][i]["volumeInfo"]["industryIdentifiers"] != ""  %}
+            {% for n in range(search["items"][i]["volumeInfo"]["industryIdentifiers"]|length) %}
+              {% if search["items"][i]["volumeInfo"]["industryIdentifiers"][n]["type"] == "ISBN_13" %}
+                <a href='/book/{{ search["items"][i]["volumeInfo"]["industryIdentifiers"][n]["identifier"] }}' class="stretched-link"></a>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
